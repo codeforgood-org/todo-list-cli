@@ -1,184 +1,326 @@
-# Todo List CLI
+# Todo List CLI ✓
 
-A simple, efficient command-line todo list manager built with Python. Track your tasks, set priorities, mark completion status, and stay organized from your terminal.
+> A powerful, colorful, and feature-rich command-line todo list manager built with Python.
 
-## Features
+[![CI](https://github.com/codeforgood-org/todo-list-cli/workflows/CI/badge.svg)](https://github.com/codeforgood-org/todo-list-cli/actions)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- Add, list, and remove tasks
-- Set task priorities (high, medium, low)
-- Mark tasks as complete/incomplete
-- Search and filter tasks
-- Lightweight JSON-based storage
-- No external dependencies (pure Python)
-- Cross-platform support
+Track your tasks, set priorities, organize with tags, and stay productive from your terminal with beautiful colorized output!
 
-## Installation
+## ✨ Features
 
-### Option 1: Install with pip (recommended)
+### Core Functionality
+- ✅ Add, list, complete, and remove tasks
+- 🎯 Priority system (high, medium, low) with color-coded display
+- 🏷️  Tags/categories for organizing tasks
+- 📅 Due date tracking
+- 🔍 Powerful search with filtering
+- 📊 Statistics and analytics dashboard
+- 💾 Lightweight JSON-based storage
+- 🎨 Beautiful colorized terminal output
+- 🚀 Fast and responsive
+- 🐳 Docker support
+
+### Advanced Features
+- Export tasks to JSON, CSV, or Markdown
+- Filter tasks by status, priority, or tags
+- View task completion statistics
+- List all tags with usage counts
+- Shell completions for Bash and Zsh
+- Cross-platform (Linux, macOS, Windows)
+- No external dependencies for basic usage
+
+## 🚀 Quick Start
+
+### Installation
+
+#### Option 1: Install with pip (Recommended)
 
 ```bash
+git clone https://github.com/codeforgood-org/todo-list-cli.git
+cd todo-list-cli
 pip install -e .
 ```
 
-This will install the `todo` command globally on your system.
-
-### Option 2: Run directly
+#### Option 2: Run directly
 
 ```bash
 python todo.py [command] [arguments]
 ```
 
-## Usage
+#### Option 3: Docker
 
-### Basic Commands
-
-#### Add a task
 ```bash
+# Build the image
+docker build -t todo-cli .
+
+# Run with volume mount for persistent storage
+docker run -v $(pwd)/data:/data todo-cli list
+
+# Create alias for convenience
+alias todo='docker run -v $(pwd)/data:/data todo-cli'
+```
+
+## 📖 Usage
+
+### Adding Tasks
+
+```bash
+# Simple task
 todo add "Buy groceries"
+
+# With priority
 todo add "Complete project report" --priority high
+
+# With tags
+todo add "Fix bug #123" --tags work,urgent
+
+# With due date
+todo add "Submit proposal" --due "2025-11-20"
+
+# All together
+todo add "Team presentation" --priority high --tags work,meeting --due "2025-11-15"
 ```
 
-#### List all tasks
+### Listing Tasks
+
 ```bash
+# List all tasks
 todo list
-```
 
-#### List tasks by status
-```bash
+# List by status
 todo list --status pending
 todo list --status completed
-```
 
-#### List tasks by priority
-```bash
+# List by priority
 todo list --priority high
+
+# List by tags
+todo list --tags work
+todo list --tags personal,shopping
+
+# Combine filters
+todo list --status pending --priority high --tags work
 ```
 
-#### Complete a task
+### Managing Tasks
+
 ```bash
+# Complete a task
 todo complete 1
-```
 
-#### Remove a task
-```bash
+# Remove a task
 todo remove 2
-```
 
-#### Search tasks
-```bash
+# Search tasks
 todo search "project"
-```
 
-### Advanced Usage
-
-#### Add a task with priority
-```bash
-todo add "Urgent meeting" --priority high
-todo add "Read documentation" --priority low
-```
-
-#### Mark multiple tasks as complete
-```bash
-todo complete 1 3 5
-```
-
-#### Clear all completed tasks
-```bash
+# Clear all completed tasks
 todo clear
 ```
 
-## Data Storage
+### Organization & Analytics
 
-Tasks are stored in a `tasks.json` file in the current directory. The file is created automatically when you add your first task.
+```bash
+# List all tags
+todo tags
 
-### Task Structure
+# View statistics
+todo stats
 
-Each task is stored as a JSON object with the following properties:
-- `task`: Task description (string)
-- `status`: Task status - "pending" or "completed" (string)
-- `priority`: Task priority - "high", "medium", or "low" (string)
-- `created_at`: Creation timestamp (ISO format)
-- `completed_at`: Completion timestamp (ISO format, null if not completed)
-
-Example:
-```json
-[
-    {
-        "task": "Buy groceries",
-        "status": "pending",
-        "priority": "medium",
-        "created_at": "2025-11-13T10:30:00",
-        "completed_at": null
-    }
-]
+# Export tasks
+todo export --format json
+todo export --format csv --output tasks.csv
+todo export --format markdown --output TODO.md
 ```
 
-## Development
+## 📊 Example Output
 
-### Setting up development environment
+### Task List
+```
+1. [○] Complete project documentation
+   Priority: !!! HIGH
+   Tags: #work, #urgent
+   📅 Due: 2025-11-15
 
-1. Clone the repository:
+2. [✓] Review pull requests
+   Priority: !!  MEDIUM
+   Tags: #work, #code-review
+   Completed: 2025-11-13
+```
+
+### Statistics Dashboard
+```
+==================================================
+  Task Statistics
+==================================================
+
+  Total tasks: 15
+  Completed:   8 (53.3%)
+  Pending:     7
+
+  Pending by priority:
+    !!! HIGH: 3
+    !!  MEDIUM: 3
+    !   LOW: 1
+
+  Total tags: 5
+  Top tags:
+    #work: 8
+    #personal: 4
+    #urgent: 2
+
+==================================================
+```
+
+## 🎨 Color Output
+
+The CLI uses colors to make your tasks easier to scan:
+
+- 🔴 **Red** - High priority tasks
+- 🟡 **Yellow** - Medium priority tasks (and pending status)
+- 🔵 **Blue** - Low priority tasks
+- 🟢 **Green** - Completed tasks and success messages
+- 🔷 **Cyan** - Tags
+- 🟣 **Magenta** - Due dates
+
+Colors can be disabled with the `NO_COLOR` environment variable.
+
+## 🔧 Configuration
+
+### Shell Completions
+
+Enable tab completion for faster workflow:
+
+#### Bash
 ```bash
+# Copy completion script
+sudo cp completions/todo-completion.bash /etc/bash_completion.d/todo
+source /etc/bash_completion.d/todo
+```
+
+#### Zsh
+```bash
+# Copy completion script
+mkdir -p ~/.zsh/completions
+cp completions/todo-completion.zsh ~/.zsh/completions/_todo
+
+# Add to ~/.zshrc
+fpath=(~/.zsh/completions $fpath)
+autoload -Uz compinit && compinit
+```
+
+See [completions/README.md](completions/README.md) for detailed instructions.
+
+## 📦 Data Storage
+
+Tasks are stored in `tasks.json` in the current directory. Each task contains:
+
+```json
+{
+  "task": "Task description",
+  "status": "pending",
+  "priority": "medium",
+  "tags": ["work", "important"],
+  "due_date": "2025-11-20",
+  "created_at": "2025-11-13T10:30:00",
+  "completed_at": null
+}
+```
+
+## 🛠️ Development
+
+### Setting Up Development Environment
+
+```bash
+# Clone the repository
 git clone https://github.com/codeforgood-org/todo-list-cli.git
 cd todo-list-cli
-```
 
-2. Create a virtual environment (optional but recommended):
-```bash
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
 
-3. Install in development mode:
-```bash
-pip install -e .
+# Install development dependencies
+pip install -e ".[dev]"
 ```
 
 ### Running Tests
 
 ```bash
-pytest tests/
-```
+# Run all tests
+pytest
 
-Run tests with coverage:
-```bash
-pytest --cov=todolist tests/
+# Run with coverage
+pytest --cov=todolist --cov-report=term-missing
+
+# Run specific test file
+pytest tests/test_core.py
 ```
 
 ### Code Quality
 
-This project uses:
-- Type hints for better code documentation
-- Docstrings following Google style
-- pytest for testing
+```bash
+# Format code
+black src/
 
-## Contributing
+# Lint code
+flake8 src/
 
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+# Type checking
+mypy src/todolist/ --ignore-missing-imports
+```
 
-## License
+## 📚 Documentation
+
+- [CHANGELOG.md](CHANGELOG.md) - Version history and release notes
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Contributing guidelines
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) - Community standards
+- [examples/](examples/) - Usage examples and integration patterns
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+Quick contribution steps:
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Roadmap
+## 🗺️ Roadmap
 
 Future enhancements planned:
-- [ ] Due dates and reminders
-- [ ] Task categories/tags
+
 - [ ] Recurring tasks
-- [ ] Export to different formats (CSV, Markdown)
-- [ ] Sync across devices
-- [ ] Color-coded output
-- [ ] Task notes/descriptions
+- [ ] Task reminders/notifications
+- [ ] Natural language date parsing ("tomorrow", "next week")
+- [ ] Task dependencies
+- [ ] Cloud sync support
+- [ ] Interactive TUI mode
+- [ ] Task notes and descriptions
 - [ ] Undo/redo functionality
+- [ ] Task archiving
+- [ ] Custom themes
 
-## Support
+## 🆘 Support
 
-If you encounter any issues or have questions:
-- Open an issue on GitHub
-- Check existing issues for solutions
-- Contribute to the documentation
+- 📫 [Open an issue](https://github.com/codeforgood-org/todo-list-cli/issues)
+- 💬 [Start a discussion](https://github.com/codeforgood-org/todo-list-cli/discussions)
+- 📖 [Read the docs](https://github.com/codeforgood-org/todo-list-cli#readme)
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
-Built with Python and maintained by the Code for Good organization.
+- Built with ❤️ by the Code for Good organization
+- Inspired by the need for a simple, powerful CLI task manager
+- Thanks to all contributors and users!
+
+---
+
+<p align="center">Made with ❤️ for productivity enthusiasts</p>

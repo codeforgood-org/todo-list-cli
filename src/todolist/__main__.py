@@ -15,16 +15,20 @@ def create_parser() -> argparse.ArgumentParser:
     """
     parser = argparse.ArgumentParser(
         prog="todo",
-        description="A simple command-line todo list manager",
+        description="A powerful command-line todo list manager with colors, tags, and more",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  todo add "Buy groceries"
-  todo add "Urgent meeting" --priority high
+  todo add "Buy groceries" --priority high --tags shopping,personal
+  todo add "Team meeting" --due "2025-11-15"
   todo list
-  todo list --status pending
+  todo list --status pending --priority high
+  todo list --tags work
   todo complete 1
   todo search "project"
+  todo stats
+  todo tags
+  todo export --format markdown
   todo clear
         """
     )
@@ -40,6 +44,14 @@ Examples:
         default="medium",
         help="Task priority (default: medium)"
     )
+    add_parser.add_argument(
+        "-t", "--tags",
+        help="Comma-separated list of tags (e.g., work,urgent)"
+    )
+    add_parser.add_argument(
+        "-d", "--due",
+        help="Due date (e.g., 2025-11-15 or 'tomorrow')"
+    )
 
     # List command
     list_parser = subparsers.add_parser("list", help="List tasks")
@@ -52,6 +64,10 @@ Examples:
         "-p", "--priority",
         choices=["high", "medium", "low"],
         help="Filter by priority"
+    )
+    list_parser.add_argument(
+        "-t", "--tags",
+        help="Filter by tags (comma-separated)"
     )
 
     # Remove command
@@ -68,6 +84,25 @@ Examples:
 
     # Clear command
     subparsers.add_parser("clear", help="Clear all completed tasks")
+
+    # Tags command
+    subparsers.add_parser("tags", help="List all tags with task counts")
+
+    # Stats command
+    subparsers.add_parser("stats", help="Display task statistics")
+
+    # Export command
+    export_parser = subparsers.add_parser("export", help="Export tasks to file")
+    export_parser.add_argument(
+        "-f", "--format",
+        choices=["json", "csv", "markdown"],
+        default="json",
+        help="Export format (default: json)"
+    )
+    export_parser.add_argument(
+        "-o", "--output",
+        help="Output file path"
+    )
 
     return parser
 
@@ -90,10 +125,12 @@ def main() -> None:
     try:
         if args.command == "add":
             description = " ".join(args.description)
-            todo_list.add_task(description, args.priority)
+            tags = args.tags.split(",") if args.tags else None
+            todo_list.add_task(description, args.priority, tags, args.due)
 
         elif args.command == "list":
-            todo_list.list_tasks(args.status, args.priority)
+            tags = args.tags.split(",") if args.tags else None
+            todo_list.list_tasks(args.status, args.priority, tags)
 
         elif args.command == "remove":
             todo_list.remove_task(args.index)
@@ -106,6 +143,15 @@ def main() -> None:
 
         elif args.command == "clear":
             todo_list.clear_completed()
+
+        elif args.command == "tags":
+            todo_list.list_tags()
+
+        elif args.command == "stats":
+            todo_list.get_statistics()
+
+        elif args.command == "export":
+            todo_list.export_tasks(args.format, args.output)
 
         else:
             parser.print_help()

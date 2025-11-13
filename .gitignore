@@ -175,5 +175,7 @@ cython_debug/
 
 # Project-specific files
 tasks.json
+tasks_export.*
+example_tasks.json
 *.json
 !pyproject.toml
