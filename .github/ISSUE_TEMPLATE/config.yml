@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question or Discussion
+    url: https://github.com/codeforgood-org/todo-list-cli/discussions
+    about: Ask questions or discuss ideas with the community
+  - name: Documentation
+    url: https://github.com/codeforgood-org/todo-list-cli#readme
+    about: Check the README for usage instructions and examples

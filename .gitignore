@@ -172,3 +172,10 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Project-specific files
+tasks.json
+tasks_export.*
+example_tasks.json
+*.json
+!pyproject.toml
